@@ -1,27 +1,10 @@
 version: 2.1
 
 orbs:
-  node: circleci/node@5.0.0
-  gcp-gke: circleci/gcp-gke@1.4.0
+  gke: circleci/gcp-gke@1.4.0
   gcr: circleci/gcp-gcr@0.14.1
 
 jobs:
-  build:
-    description: Configure Node.js
-    machine: true
-    steps:
-      - checkout
-      - node/install
-      # Install npm
-      - node/install-yarn
-      - node/with-cache:
-          steps:
-            - run:
-                name: Install Dependencies
-                command: yarn install --frozen-lockfile
-          cache-key: package.json
-          use-strict-cache: true
-
   docker:
     description: Docker Build & Push
     machine: true
@@ -30,32 +13,31 @@ jobs:
       - gcr/gcr-auth
       - gcr/build-image:
           image: web
-          tag: latest
+          tag: $CIRCLE_SHA1
       - gcr/push-image:
           image: web
-          tag: latest
+          tag: $CIRCLE_SHA1
 
-  deploy:
+  kubernetes:
     description: Deploy to Google Kubernetes Engine
     machine: true
     steps:
-      - gcp-gke/install
-      - gcp-gke/init
-      - gcp-gke/rollout-image:
-          deployment: default
+      - gke/install
+      - gke/rollout-image:
+          cluster: default
           container: web
-          image: gcr.io/aboverio/web:latest
+          deployment: web
+          image: gcr.io/aboverio/web:$CIRCLE_SHA1
 
 workflows:
   deployment:
-    branches:
-      only:
-        - main
     jobs:
-      - build
       - docker:
-          requires:
-            - build
-      - deploy:
+          context: default
+      - kubernetes:
+          context: default
           requires:
             - docker
+          filters:
+            branches:
+              only: main
