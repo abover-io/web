@@ -24,6 +24,7 @@ jobs:
     steps:
       - gke/update-kubeconfig-with-credentials:
           cluster: default
+          perform-login: true
       - gke/rollout-image:
           cluster: default
           container: web
