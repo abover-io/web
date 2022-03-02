@@ -13,8 +13,9 @@ jobs:
       - checkout
       - node/install-packages:
           check-cache: always
-          pkg-manager: yarn-berry
-          with-cache: false
+          pkg-manager: yarn
+          with-cache: true
+
   docker:
     description: Docker Build & Push
     machine: true
@@ -23,7 +24,7 @@ jobs:
       - gcr/gcr-auth
       - gcr/build-image:
           image: web
-          tag: latest
+          tag: $CIRCLE_SHA1
       - gcr/push-image:
           image: web
           tag: latest
@@ -32,12 +33,12 @@ jobs:
     description: Deploy to Google Kubernetes Engine
     machine: true
     steps:
-      - gcp-gke/install
-      - gcp-gke/init
-      - gcp-gke/rollout-image:
-          deployment: default
+      - gke/publish-and-rollout-image:
+          cluster: default
           container: web
-          image: gcr.io/aboverio/web:latest
+          deployment: web
+          image: web
+          tag: $CIRCLE_SHA1
 
 workflows:
   deployment:
