@@ -9,7 +9,7 @@ COPY . .
 COPY --from=dependencies /app/node_modules ./node_modules
 RUN yarn build
 
-FROM node:lts as runner
+FROM node:lts-alpine as runner
 WORKDIR /app
 ENV NODE_ENV production
 COPY --from=builder /app/next.config.js ./
