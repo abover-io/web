@@ -6,22 +6,15 @@ orbs:
   gcr: circleci/gcp-gcr@0.14.1
 
 jobs:
-  build:
-    description: Configure Node.js
+  install:
+    description: Install Dependencies
     machine: true
     steps:
       - checkout
-      - node/install
-      # Install npm
-      - node/install-yarn
-      - node/with-cache:
-          steps:
-            - run:
-                name: Install Dependencies
-                command: yarn install --frozen-lockfile
-          cache-key: package.json
-          use-strict-cache: true
-
+      - node/install-packages:
+          check-cache: always
+          pkg-manager: yarn-berry
+          with-cache: false
   docker:
     description: Docker Build & Push
     machine: true
@@ -48,14 +41,14 @@ jobs:
 
 workflows:
   deployment:
-    branches:
-      only:
-        - main
     jobs:
-      - build
+      - install
       - docker:
           requires:
             - build
       - deploy:
           requires:
             - docker
+          filters:
+            branches:
+              only: main
