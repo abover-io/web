@@ -25,7 +25,7 @@ jobs:
           tag: $CIRCLE_SHA1
       - gcr/push-image:
           image: web
-          tag: latest
+          tag: $CIRCLE_SHA1
 
   deploy:
     description: Deploy to Google Kubernetes Engine
@@ -36,7 +36,7 @@ jobs:
           cluster: default
           container: web
           deployment: web
-          image: gcr.io/aboverio/web:latest
+          image: gcr.io/aboverio/web:$CIRCLE_SHA1
 
 workflows:
   deployment:
