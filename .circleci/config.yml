@@ -22,12 +22,16 @@ jobs:
     description: Deploy to Google Kubernetes Engine
     machine: true
     steps:
-      - gke/install
+      - gke/update-kubeconfig-with-credentials:
+          cluster: default
+          install-kubectl: true
+          perform-login: true
       - gke/rollout-image:
           cluster: default
           container: web
           deployment: web
-          image: gcr.io/aboverio/web:$CIRCLE_SHA1
+          image: gcr.io/aboverio/web
+          tag: $CIRCLE_SHA1
 
 workflows:
   deployment:
