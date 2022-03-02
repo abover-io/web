@@ -1,20 +1,10 @@
 version: 2.1
 
 orbs:
-  node: circleci/node@5.0.0
   gke: circleci/gcp-gke@1.4.0
   gcr: circleci/gcp-gcr@0.14.1
 
 jobs:
-  install:
-    description: Install Dependencies
-    machine: true
-    steps:
-      - checkout
-      - node/install-packages:
-          check-cache: always
-          with-cache: true
-
   docker:
     description: Docker Build & Push
     machine: true
@@ -28,7 +18,7 @@ jobs:
           image: web
           tag: $CIRCLE_SHA1
 
-  deploy:
+  kubernetes:
     description: Deploy to Google Kubernetes Engine
     machine: true
     steps:
@@ -42,11 +32,8 @@ jobs:
 workflows:
   deployment:
     jobs:
-      - install
-      - docker:
-          requires:
-            - install
-      - deploy:
+      - docker
+      - kubernetes:
           requires:
             - docker
           filters:
