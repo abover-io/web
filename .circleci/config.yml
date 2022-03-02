@@ -23,6 +23,8 @@ jobs:
     machine: true
     steps:
       - gke/install
+      - gke/update-kubeconfig-with-credentials:
+          cluster: default
       - gke/rollout-image:
           cluster: default
           container: web
