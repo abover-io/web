@@ -32,8 +32,10 @@ jobs:
 workflows:
   deployment:
     jobs:
-      - docker
+      - docker:
+          context: default
       - kubernetes:
+          context: default
           requires:
             - docker
           filters:
