@@ -22,10 +22,7 @@ jobs:
     description: Deploy to Google Kubernetes Engine
     machine: true
     steps:
-      - gke/update-kubeconfig-with-credentials:
-          cluster: default
-          install-kubectl: true
-          perform-login: true
+      - gke/install
       - gke/rollout-image:
           cluster: default
           container: web
