@@ -35,6 +35,9 @@ workflows:
     jobs:
       - docker:
           context: default
+          filters:
+            branches:
+              only: main
       - kubernetes:
           context: default
           requires:
