@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   node: circleci/node@5.0.0
-  gcp-gke: circleci/gcp-gke@1.4.0
+  gke: circleci/gcp-gke@1.4.0
   gcr: circleci/gcp-gcr@0.14.1
 
 jobs:
