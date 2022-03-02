@@ -32,8 +32,8 @@ jobs:
     description: Deploy to Google Kubernetes Engine
     machine: true
     steps:
-      - gcp-gke/install
-      - gcp-gke/rollout-image:
+      - gke/install
+      - gke/rollout-image:
           cluster: default
           container: web
           deployment: web
