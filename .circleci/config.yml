@@ -23,7 +23,7 @@ jobs:
     machine: true
     steps:
       - gke/update-kubeconfig-with-credentials:
-          cluster: default
+          cluster: default --region=$GOOGLE_COMPUTE_REGION
           install-kubectl: true
           perform-login: true
       - gke/rollout-image:
