@@ -13,25 +13,21 @@ jobs:
       - gcr/gcr-auth
       - gcr/build-image:
           image: web
-          tag: $CIRCLE_SHA1
+          tag: latest
       - gcr/push-image:
           image: web
-          tag: $CIRCLE_SHA1
+          tag: latest
 
   kubernetes:
     description: Deploy to Google Kubernetes Engine
     machine: true
     steps:
-      - gke/update-kubeconfig-with-credentials:
-          cluster: default --region=$GOOGLE_COMPUTE_REGION
-          install-kubectl: true
-          perform-login: true
       - gke/rollout-image:
-          cluster: default --region=$GOOGLE_COMPUTE_REGION
+          cluster: default --zone=$GOOGLE_COMPUTE_ZONE
           container: web
           deployment: web
           image: gcr.io/aboverio/web
-          tag: $CIRCLE_SHA1
+          tag: latest
 
 workflows:
   deployment:
