@@ -27,7 +27,7 @@ jobs:
           install-kubectl: true
           perform-login: true
       - gke/rollout-image:
-          cluster: default
+          cluster: default --region=$GOOGLE_COMPUTE_REGION
           container: web
           deployment: web
           image: gcr.io/aboverio/web
